@@ -23,19 +23,27 @@ channels = [
     {'State': False, 'From': '', 'to': ''},
 ]
 
-def changeChannel(vet, flag):
-    for idx, slot in enumerate(vet):
-        if flag and not slot['State']:
-            slot['State'] = True
-            vet[idx + 1]['State'] = True
-            break
-        if not flag and slot['State']:
-            slot['State'] = False
-            vet[idx + 1]['State'] = False
-            break
-        if idx == len(vet) - 2:
+def changeChannel(vet, flag, ch = ['', '']):
+    if ch == ['', '']:
+        for idx, slot in enumerate(vet):
+            if flag and not slot['State']:
+                slot['State'] = True
+                vet[idx + 1]['State'] = True
+                break
+            if not flag and slot['State']:
+                slot['State'] = False
+                vet[idx + 1]['State'] = False
+                break
+            if idx == len(vet) - 2:
+                return False
+        return True
+    else:
+        if not vet[ch[0]]['State'] and not vet[ch[1]]['State']:
+            vet[ch[0]]['State'] = True
+            vet[ch[1]]['State'] = True
+            return True
+        else:
             return False
-    return True
 
 def contUsedChannels(vet):
     count = 0
@@ -97,7 +105,7 @@ pos = nx.get_node_attributes(G, 'pos')
 edge_labels = {(u, v): d['cost'] for u, v, d in G.edges(data=True)}
 
 nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8)
-nx.draw(G, pos, with_labels=True, edge_color='black', width=1, alpha=0.5, node_size=500, node_color='blue')
+nx.draw(G, pos, with_labels=True, edge_color='black', width=1, alpha=0.5, node_size=500, node_color='blue')ptyo
 
 # path = nx.dijkstra_path(G, 'Miami', 'Portland', weight='cost')
 # print(G.edges['Miami', 'Jupiter']['cost'])
