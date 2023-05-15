@@ -2,6 +2,7 @@ import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
 
+
 G = nx.Graph()
 
 links = pd.read_csv('TopologiasDeReferencia/usaGde_links.csv')
@@ -12,16 +13,11 @@ id, latitude, longitude, type = nodes['Id'], nodes['Lat'], nodes['Long'], nodes[
 # links
 From, to, length, capacity, cost = links['From'], links['To'], links['Length'], links['Capacity'], links['Cost']
 
-channels = [
-    {'State': False, 'From': '', 'to': ''}, 
-    {'State': False, 'From': '', 'to': ''},
-    {'State': False, 'From': '', 'to': ''},
-    {'State': False, 'From': '', 'to': ''},
-    {'State': False, 'From': '', 'to': ''},
-    {'State': False, 'From': '', 'to': ''},
-    {'State': False, 'From': '', 'to': ''},
-    {'State': False, 'From': '', 'to': ''},
-]
+CC = 12.5 # tamanho do canal
+channels = []
+for i in range(0, 80):
+    new_dict = {'State': False, 'From': '', 'to': ''}
+    channels.append(new_dict)
 
 def changeChannel(vet, flag, ch = ['', '']):
     if ch == ['', '']:
