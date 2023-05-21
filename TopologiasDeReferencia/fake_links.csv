@@ -1,0 +1,23 @@
+From,To,Length,Capacity,Cost
+Porto Alegre,Caxias do Sul,120,4,3000
+Porto Alegre,Pelotas,250,3,2800
+Porto Alegre,Santa Maria,290,5,3200
+Caxias do Sul,Bento Gonçalves,40,2,1500
+Caxias do Sul,Passo Fundo,170,3,2500
+Caxias do Sul,Porto Alegre,120,4,3000
+Pelotas,Rio Grande,30,2,1000
+Pelotas,Porto Alegre,250,3,2800
+Santa Maria,Cruz Alta,160,3,2400
+Santa Maria,Passo Fundo,200,4,2800
+Santa Maria,Porto Alegre,290,5,3200
+Bento Gonçalves,Caxias do Sul,40,2,1500
+Bento Gonçalves,Canela,60,2,1800
+Passo Fundo,Caxias do Sul,170,3,2500
+Passo Fundo,Santa Maria,200,4,2800
+Passo Fundo,Erechim,90,2,2000
+Rio Grande,Pelotas,30,2,1000
+Cruz Alta,Santa Maria,160,3,2400
+Cruz Alta,Erechim,140,3,2200
+Canela,Bento Gonçalves,60,2,1800
+Erechim,Passo Fundo,90,2,2000
+Erechim,Cruz Alta,140,3,2200

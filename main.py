@@ -5,13 +5,19 @@ import matplotlib.pyplot as plt
 
 G = nx.Graph()
 
-links = pd.read_csv('TopologiasDeReferencia/usaGde_links.csv')
-nodes = pd.read_csv('TopologiasDeReferencia/usaGde_nodes.csv')
+# links = pd.read_csv('TopologiasDeReferencia/usaGde_links.csv')
+# nodes = pd.read_csv('TopologiasDeReferencia/usaGde_nodes.csv')
+links = pd.read_csv('TopologiasDeReferencia/fake_links.csv')
+nodes = pd.read_csv('TopologiasDeReferencia/fake_nodes.csv')
+demandas = pd.read_csv('Demandas/fake_demandas.csv')
+
 
 # nodes
 id, latitude, longitude, type = nodes['Id'], nodes['Lat'], nodes['Long'], nodes['Type']
 # links
 From, to, length, capacity, cost = links['From'], links['To'], links['Length'], links['Capacity'], links['Cost']
+# demandas
+Source, Destination, Demand = demandas['Source'], demandas['Destination'], demandas['Demand']
 
 CC = 12.5 # tamanho do canal
 channels = []
@@ -19,8 +25,8 @@ for i in range(0, 80):
     new_dict = {'State': False, 'From': '', 'to': ''}
     channels.append(new_dict)
 
-def changeChannel(vet, flag, ch = ['', '']):
-    if ch == ['', '']:
+def changeChannel(vet, flag, ch = []):
+    if ch == []:
         for idx, slot in enumerate(vet):
             if flag and not slot['State']:
                 slot['State'] = True
@@ -40,6 +46,17 @@ def changeChannel(vet, flag, ch = ['', '']):
             return True
         else:
             return False
+        
+def unchangeChannel(vet, ch = []):
+    if ch == []:
+        for idx, slot in enumerate(vet):
+            if slot['State']:
+                slot['State'] = False
+                vet[idx + 1]['State'] = False
+                break
+    else:
+        vet[ch[0]]['State'] = False
+        vet[ch[1]]['State'] = False
 
 def contUsedChannels(vet):
     count = 0
@@ -47,7 +64,6 @@ def contUsedChannels(vet):
         if slot['State']:
             count += 1
     return count
-
 
 for i in range(len(id)):
     G.add_node(id[i],
@@ -101,9 +117,19 @@ pos = nx.get_node_attributes(G, 'pos')
 edge_labels = {(u, v): d['cost'] for u, v, d in G.edges(data=True)}
 
 nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8)
-nx.draw(G, pos, with_labels=True, edge_color='black', width=1, alpha=0.5, node_size=500, node_color='blue')ptyo
+nx.draw(G, pos, with_labels=True, edge_color='black', width=1, alpha=0.5, node_size=500, node_color='blue')
+
+def testDemands():
+    for i in range(len(Source)):
+        print('Demanda de {} para {} com {}Gbps'.format(Source[i], Destination[i], Demand[i]))
+        print('Taxa de bloqueio: {}%'.format(TB(mapNetwork(Source[i]), Demand[i])))
+        print()
+
+# with base in molution modes [BPSK, QPSK, 8QAM, 16QAM, 32QAM, 64QAM] an distance (node to node, use links), I want a function that return the number of channels used and alocate this channels
+# def modulationMode(distance, base):
 
 # path = nx.dijkstra_path(G, 'Miami', 'Portland', weight='cost')
 # print(G.edges['Miami', 'Jupiter']['cost'])
-print(mapNetwork('Miami'))
+# print(mapNetwork('Porto Alegre'))
+testDemands()
 plt.show()
