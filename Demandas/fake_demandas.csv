@@ -3,21 +3,21 @@ Porto Alegre,Caxias do Sul,150
 Porto Alegre,Pelotas,250
 Porto Alegre,Santa Maria,300
 Caxias do Sul,Porto Alegre,200
-Caxias do Sul,Bento Goncalves,100
+Caxias do Sul,Bento Gonçalves,100
 Caxias do Sul,Passo Fundo,150
 Pelotas,Rio Grande,100
 Pelotas,Porto Alegre,200
 Santa Maria,Cruz Alta,120
 Santa Maria,Passo Fundo,150
 Santa Maria,Porto Alegre,250
-Bento Goncalves,Caxias do Sul,80
-Bento Goncalves,Canela,50
+Bento Gonçalves,Caxias do Sul,80
+Bento Gonçalves,Canela,50
 Passo Fundo,Caxias do Sul,120
 Passo Fundo,Santa Maria,150
 Passo Fundo,Erechim,80
 Rio Grande,Pelotas,80
 Cruz Alta,Santa Maria,100
 Cruz Alta,Erechim,70
-Canela,Bento Goncalves,40
+Canela,Bento Gonçalves,40
 Erechim,Passo Fundo,80
 Erechim,Cruz Alta,70
