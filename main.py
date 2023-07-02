@@ -167,29 +167,29 @@ def replace_node_positions(G, best_configuration):
     # Salvar a posição atual dos nós em uma variável temporária
     old_positions = nx.get_node_attributes(G, 'pos')
   
-    # Para cada nó no grafo G, substituir sua posição pela posição correspondente na best_configuration
-    for i, node in enumerate(G.nodes()):
-        new_position = old_positions[best_configuration[i]]
-        G.nodes[node]['pos'] = new_position
+    # Criar um novo grafo com os nós reordenados
+    new_G = nx.Graph()
+    for i, node in enumerate(best_configuration):
+        new_G.add_node(node, pos=old_positions[i])
   
-    # Atualizar as arestas do grafo G de acordo com a nova configuração dos nós
+    # Atualizar as arestas do novo grafo
     new_edges = []
     for u, v, data in G.edges(data=True):
         new_u = best_configuration.index(u)
         new_v = best_configuration.index(v)
         new_data = dict(data)
         new_edges.append((new_u, new_v, new_data))
+    new_G.add_edges_from(new_edges)
   
-    # Limpar o grafo G e adicionar as arestas atualizadas
+    # Substituir o grafo G pelo novo grafo com nós reordenados
     G.clear()
-    G.add_edges_from(new_edges)
-
+    G.add_edges_from(new_G.edges(data=True))
+    G.add_nodes_from(new_G.nodes(data=True))
 
 # Exemplo de uso:
 best_configuration = test_all_node_positions(G)
 print("Melhor configuração de nós:")
 print(best_configuration)
-
 
 testDemands()
 
