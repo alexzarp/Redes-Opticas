@@ -1,7 +1,7 @@
+import itertools
 import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
-
 
 G = nx.Graph()
 
@@ -9,8 +9,9 @@ G = nx.Graph()
 # nodes = pd.read_csv('TopologiasDeReferencia/usaGde_nodes.csv')
 links = pd.read_csv('TopologiasDeReferencia/fake_links.csv')
 nodes = pd.read_csv('TopologiasDeReferencia/fake_nodes.csv')
+# links = pd.read_csv('TopologiasDeReferencia/rnpBrazil_links-2023.csv')
+# nodes = pd.read_csv('TopologiasDeReferencia/rnpBrazil_nodes-2023.csv')
 demandas = pd.read_csv('Demandas/fake_demandas.csv')
-
 
 # nodes
 id, latitude, longitude, type = nodes['Id'], nodes['Lat'], nodes['Long'], nodes['Type']
@@ -113,11 +114,13 @@ def mapNetwork(From):
 def TB(DB, TD):
     return DB / TD
 
-pos = nx.get_node_attributes(G, 'pos')
-edge_labels = {(u, v): d['cost'] for u, v, d in G.edges(data=True)}
-
-nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8)
-nx.draw(G, pos, with_labels=True, edge_color='black', width=1, alpha=0.5, node_size=500, node_color='blue')
+def drawGraph(G):
+    pos = nx.get_node_attributes(G, 'pos')
+    edge_labels = {(u, v): d['cost'] for u, v, d in G.edges(data=True)}
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8)
+    nx.draw(G, pos, with_labels=True, edge_color='black', width=1, alpha=0.5, node_size=500, node_color='blue')
+    plt.show()
+drawGraph(G)
 
 def testDemands():
     for i in range(len(Source)):
@@ -125,11 +128,73 @@ def testDemands():
         print('Taxa de bloqueio: {}%'.format(TB(mapNetwork(Source[i]), Demand[i])))
         print()
 
-# with base in molution modes [BPSK, QPSK, 8QAM, 16QAM, 32QAM, 64QAM] an distance (node to node, use links), I want a function that return the number of channels used and alocate this channels
-# def modulationMode(distance, base):
-
 # path = nx.dijkstra_path(G, 'Miami', 'Portland', weight='cost')
 # print(G.edges['Miami', 'Jupiter']['cost'])
 # print(mapNetwork('Porto Alegre'))
+
+def calculate_total_extension(G):
+    total_extension = 0
+    for u, v in G.edges():
+        position_u = G.nodes[u]['pos']
+        position_v = G.nodes[v]['pos']
+        length = G.edges[u, v]['length']
+        total_extension += length * distance(position_u, position_v)
+    return total_extension
+
+def distance(pos1, pos2): # Distancia por latitudes e longitudes euclidianas
+    return ((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2) ** 0.5
+
+def test_all_node_positions(G):
+    best_extension = float('inf')
+    best_configuration = None
+
+    nodes = list(G.nodes())
+    positions = list(itertools.permutations(nodes))
+
+    for pos in positions:
+        for i, node in enumerate(nodes):
+            G.nodes[node]['pos'] = G.nodes[pos[i]]['pos']
+
+        total_extension = calculate_total_extension(G)
+
+        if total_extension < best_extension:
+            best_extension = total_extension
+            best_configuration = pos
+
+    return best_configuration
+
+def replace_node_positions(G, best_configuration):
+    # Salvar a posição atual dos nós em uma variável temporária
+    old_positions = nx.get_node_attributes(G, 'pos')
+  
+    # Para cada nó no grafo G, substituir sua posição pela posição correspondente na best_configuration
+    for i, node in enumerate(G.nodes()):
+        new_position = old_positions[best_configuration[i]]
+        G.nodes[node]['pos'] = new_position
+  
+    # Atualizar as arestas do grafo G de acordo com a nova configuração dos nós
+    new_edges = []
+    for u, v, data in G.edges(data=True):
+        new_u = best_configuration.index(u)
+        new_v = best_configuration.index(v)
+        new_data = dict(data)
+        new_edges.append((new_u, new_v, new_data))
+  
+    # Limpar o grafo G e adicionar as arestas atualizadas
+    G.clear()
+    G.add_edges_from(new_edges)
+
+
+# Exemplo de uso:
+best_configuration = test_all_node_positions(G)
+print("Melhor configuração de nós:")
+print(best_configuration)
+
+
 testDemands()
+
+# Exemplo de uso:
+print("Grafo com nós reordenados:")
+replace_node_positions(G, best_configuration)
+drawGraph(G)
 plt.show()
